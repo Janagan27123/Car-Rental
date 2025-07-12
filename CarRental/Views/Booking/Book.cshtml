@@ -1,0 +1,142 @@
+@model CarRental.Models.Booking
+@{
+    ViewData["Title"] = "Book Vehicle";
+    var vehicle = ViewBag.Vehicle as CarRental.Models.Vehicle;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-calendar-check"></i> Book Vehicle
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Vehicle Summary -->
+                    @if (vehicle != null)
+                    {
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <img src="@(string.IsNullOrEmpty(vehicle.ImageUrl) ? "/images/default-car.jpg" : vehicle.ImageUrl)" 
+                                     class="img-fluid rounded" alt="@vehicle.Name">
+                            </div>
+                            <div class="col-md-8">
+                                <h4>@vehicle.Name</h4>
+                                <p class="text-muted">@vehicle.Description</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p><strong>Type:</strong> <span class="badge bg-primary">@vehicle.Type</span></p>
+                                        <p><strong>Seats:</strong> <span class="badge bg-secondary">@vehicle.Seats</span></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p><strong>Price per Day:</strong></p>
+                                        <h5 class="text-primary">Rs. @vehicle.PricePerDay.ToString("N0")</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Booking Form -->
+                    <form asp-action="Book" method="post">
+                        <input type="hidden" asp-for="VehicleID" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="CustomerName" class="form-label">Full Name *</label>
+                                    <input asp-for="CustomerName" class="form-control" required>
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Phone" class="form-label">Phone Number *</label>
+                                    <input asp-for="Phone" class="form-control" required>
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email Address *</label>
+                            <input asp-for="Email" type="email" class="form-control" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="PickupDate" class="form-label">Pick-up Date *</label>
+                                    <input asp-for="PickupDate" type="date" class="form-control" required>
+                                    <span asp-validation-for="PickupDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="RentalDays" class="form-label">Rental Days *</label>
+                                    <input asp-for="RentalDays" type="number" class="form-control" min="1" max="30" required>
+                                    <span asp-validation-for="RentalDays" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Amount Display -->
+                        <div class="alert alert-info">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Total Amount:</strong>
+                                    <span id="totalAmount" class="h5 text-primary">Calculating...</span>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <small class="text-muted">
+                                        Price per day: Rs. @(vehicle?.PricePerDay.ToString("N0") ?? "0")
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check"></i> Confirm Booking
+                            </button>
+                            <a href="/Vehicle/Details/@Model.VehicleID" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Calculate total amount when rental days change
+document.getElementById('RentalDays').addEventListener('input', function() {
+    calculateTotal();
+});
+
+// Calculate total amount when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    calculateTotal();
+});
+
+function calculateTotal() {
+    const rentalDays = parseInt(document.getElementById('RentalDays').value) || 0;
+    const pricePerDay = @(vehicle?.PricePerDay ?? 0);
+    const total = rentalDays * pricePerDay;
+    
+    document.getElementById('totalAmount').textContent = 'Rs. ' + total.toLocaleString();
+}
+
+// Set minimum date to tomorrow
+document.addEventListener('DOMContentLoaded', function() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    document.getElementById('PickupDate').min = tomorrowStr;
+});
+</script> 

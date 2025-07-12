@@ -1,0 +1,150 @@
+@model IEnumerable<CarRental.Models.Vehicle>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 mb-4">THE BEST CAR RENTAL SERVICE</h1>
+        <p class="lead mb-4">We have a wide variety of cars to suit your needs and budget. Call us and rent a car now.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card bg-dark bg-opacity-75">
+                    <div class="card-body">
+                        <h5 class="card-title text-white">Let's find your perfect Vehicle</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="form-label text-white">Vehicle Type</label>
+                                <select class="form-select" id="vehicleType">
+                                    <option value="">All Types</option>
+                                    <option value="CAR">Car</option>
+                                    <option value="VAN">Van</option>
+                                    <option value="BUS">Bus</option>
+                                    <option value="JEEP">Jeep</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-white">Seats</label>
+                                <select class="form-select" id="seats">
+                                    <option value="">Any</option>
+                                    <option value="4">4 Seats</option>
+                                    <option value="5">5 Seats</option>
+                                    <option value="7">7 Seats</option>
+                                    <option value="12">12 Seats</option>
+                                    <option value="25">25 Seats</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-white">Pick-up Date</label>
+                                <input type="date" class="form-control" id="pickupDate">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-white">Rental Days</label>
+                                <input type="number" class="form-control" id="rentalDays" min="1" max="30" value="1">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-3" onclick="searchVehicles()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h5>24/7 Phone Support</h5>
+                <p>We offer round-the-clock support for all your needs.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h5>No Credit Card Fees</h5>
+                <p>Transparent pricing with no hidden charges.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h5>No Amendment Fees</h5>
+                <p>Flexible booking with free modifications.</p>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h5>Less Documentation</h5>
+                <p>Only NIC or Passport copy required.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vehicles Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">WIDE RANGE OF CARS</h2>
+        <p class="text-center mb-5">We have a wide range of cars ranging from budget options to luxury wedding cars</p>
+        
+        <div class="row" id="vehiclesContainer">
+            @foreach (var vehicle in Model.Take(6))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card vehicle-card h-100">
+                        <img src="@(string.IsNullOrEmpty(vehicle.ImageUrl) ? "/images/default-car.jpg" : vehicle.ImageUrl)" 
+                             class="card-img-top" alt="@vehicle.Name" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">@vehicle.Name</h5>
+                            <p class="card-text">@vehicle.Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">@vehicle.Type</span>
+                                <span class="badge bg-secondary">@vehicle.Seats Seats</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0">Rs. @vehicle.PricePerDay.ToString("N0")</span>
+                                <a href="/Vehicle/Details/@vehicle.VehicleID" class="btn btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="/Vehicle" class="btn btn-outline-primary btn-lg">
+                View All Vehicles
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+function searchVehicles() {
+    const type = document.getElementById('vehicleType').value;
+    const seats = document.getElementById('seats').value;
+    const pickupDate = document.getElementById('pickupDate').value;
+    const rentalDays = document.getElementById('rentalDays').value;
+    
+    let url = '/Vehicle?';
+    if (type) url += `type=${type}&`;
+    if (seats) url += `seats=${seats}&`;
+    if (pickupDate) url += `pickupDate=${pickupDate}&`;
+    if (rentalDays) url += `rentalDays=${rentalDays}&`;
+    
+    window.location.href = url;
+}
+</script> 

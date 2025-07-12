@@ -1,0 +1,131 @@
+@model CarRental.Models.ContactMessage
+@{
+    ViewData["Title"] = "Contact";
+}
+
+@if (TempData["ContactSuccess"] != null)
+{
+    <div class="alert alert-success">@TempData["ContactSuccess"]</div>
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4">Contact Us</h1>
+            <p class="lead">Get in touch with us for any inquiries about our car rental services.</p>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-phone fa-3x text-primary mb-3"></i>
+                            <h5>Phone</h5>
+                            <p class="mb-0">0766251694</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                            <h5>Email</h5>
+                            <p class="mb-0">unicom_boys@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                            <h5>Address</h5>
+                            <p class="mb-0">Jaffna, Sri Lanka</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                            <h5>Business Hours</h5>
+                            <p class="mb-0">24/7 Available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Send us a Message</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Contact" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label">Name</label>
+                                    <input asp-for="Name" class="form-control" required>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" class="form-control" required>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Subject" class="form-label">Subject</label>
+                            <input asp-for="Subject" class="form-control" required>
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Message" class="form-label">Message</label>
+                            <textarea asp-for="Message" class="form-control" rows="5" required></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Contact</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Emergency Contact</h6>
+                    <p><i class="fas fa-phone"></i> 0766251694</p>
+                    
+                    <h6>WhatsApp</h6>
+                    <p><i class="fab fa-whatsapp"></i> 0766251694</p>
+                    
+                    <h6>Email Support</h6>
+                    <p><i class="fas fa-envelope"></i> unicom_boys@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Services</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-car"></i> Self Drive</li>
+                        <li><i class="fas fa-user-tie"></i> Tours with Drivers</li>
+                        <li><i class="fas fa-calendar-star"></i> Special Events</li>
+                        <li><i class="fas fa-plane"></i> Airport Transfers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

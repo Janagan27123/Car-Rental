@@ -1,0 +1,194 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+            </h1>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">@ViewBag.TotalVehicles</h4>
+                            <p class="mb-0">Total Vehicles</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-car fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">@ViewBag.TotalBookings</h4>
+                            <p class="mb-0">Total Bookings</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-calendar-check fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">@ViewBag.PendingBookings</h4>
+                            <p class="mb-0">Pending Bookings</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">Welcome</h4>
+                            <p class="mb-0">@Context.Session.GetString("AdminFullName")</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-user-shield fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/Admin/Vehicles" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="fas fa-car"></i> Manage Vehicles
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/Admin/Bookings" class="btn btn-outline-success w-100 mb-2">
+                                <i class="fas fa-calendar-check"></i> View Bookings
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/Admin/CreateVehicle" class="btn btn-outline-info w-100 mb-2">
+                                <i class="fas fa-plus"></i> Add New Vehicle
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/Admin/ContactMessages" class="btn btn-outline-warning w-100 mb-2">
+                                <i class="fas fa-envelope"></i> Contact Messages
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/Admin/Logout" class="btn btn-outline-danger w-100 mb-2">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Tracking Map -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> Vehicle Tracking
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="trackingMap" style="height: 400px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+<script>
+// Initialize tracking map
+function initTrackingMap() {
+    const map = new google.maps.Map(document.getElementById("trackingMap"), {
+        zoom: 12,
+        center: { lat: 9.6615, lng: 80.0255 }, // Jaffna coordinates
+    });
+
+    // Add markers for all vehicles (you would fetch this data from server)
+    const vehicles = [
+        { name: "Honda Civic", lat: 9.6615, lng: 80.0255, type: "CAR" },
+        { name: "Toyota Aqua", lat: 9.6620, lng: 80.0260, type: "CAR" },
+        { name: "Suzuki Swift", lat: 9.6610, lng: 80.0250, type: "CAR" },
+        { name: "Toyota Hiace", lat: 9.6625, lng: 80.0265, type: "VAN" },
+        { name: "Mitsubishi Delica", lat: 9.6618, lng: 80.0258, type: "VAN" },
+        { name: "Toyota Coaster", lat: 9.6630, lng: 80.0270, type: "BUS" },
+        { name: "Jeep Wrangler", lat: 9.6612, lng: 80.0252, type: "JEEP" }
+    ];
+
+    vehicles.forEach(vehicle => {
+        const marker = new google.maps.Marker({
+            position: { lat: vehicle.lat, lng: vehicle.lng },
+            map: map,
+            title: vehicle.name,
+            icon: {
+                url: getVehicleIcon(vehicle.type),
+                scaledSize: new google.maps.Size(32, 32)
+            }
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div>
+                    <h6>${vehicle.name}</h6>
+                    <p>Type: ${vehicle.type}</p>
+                    <p>Location: ${vehicle.lat.toFixed(4)}, ${vehicle.lng.toFixed(4)}</p>
+                </div>
+            `
+        });
+
+        marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+        });
+    });
+}
+
+function getVehicleIcon(type) {
+    const icons = {
+        'CAR': 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+        'VAN': 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        'BUS': 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+        'JEEP': 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+    };
+    return icons[type] || icons['CAR'];
+}
+
+// Initialize map when page loads
+window.addEventListener('load', initTrackingMap);
+</script> 

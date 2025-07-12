@@ -1,0 +1,39 @@
+@model IEnumerable<CarRental.Models.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="container-fluid py-4">
+    <h1 class="mb-4"><i class="fas fa-envelope"></i> Contact Messages</h1>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Sent At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var msg in Model)
+                        {
+                            <tr>
+                                <td>@msg.Id</td>
+                                <td>@msg.Name</td>
+                                <td>@msg.Email</td>
+                                <td>@msg.Subject</td>
+                                <td>@msg.Message</td>
+                                <td>@msg.SentAt.ToString("MMM dd, yyyy HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

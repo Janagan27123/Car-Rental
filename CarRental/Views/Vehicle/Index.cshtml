@@ -1,0 +1,203 @@
+@model IEnumerable<CarRental.Models.Vehicle>
+@{
+    ViewData["Title"] = "Vehicles";
+    var selectedType = ViewBag.SelectedType as string;
+    var types = new[] { "CAR", "VAN", "BUS", "JEEP" };
+    var seatOptions = new[] { "4", "5", "7", "12", "25" };
+    var selectedSeats = ViewBag.SelectedSeats as string;
+    var priceOptions = new[] {
+        new { Value = "0-10000", Text = "Under Rs. 10,000" },
+        new { Value = "10000-20000", Text = "Rs. 10,000 - 20,000" },
+        new { Value = "20000-50000", Text = "Rs. 20,000 - 50,000" },
+        new { Value = "50000-999999", Text = "Over Rs. 50,000" }
+    };
+    var selectedPrice = ViewBag.SelectedPrice as string;
+    var availabilityOptions = new[] {
+        new { Value = "true", Text = "Available" },
+        new { Value = "false", Text = "Not Available" }
+    };
+    var selectedAvailability = ViewBag.SelectedAvailability as string;
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-5">Choose your VEHICLE</h1>
+    
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label">Vehicle Type</label>
+                            <select class="form-select" id="filterType" onchange="filterVehicles()">
+                                <option value="">All</option>
+                                @foreach (var type in types)
+                                {
+                                    var selected = selectedType == type ? " selected" : "";
+                                    @Html.Raw($"<option value=\"{type}\"{selected}>{type}</option>")
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Seats</label>
+                            <select class="form-select" id="filterSeats" onchange="filterVehicles()">
+                                <option value="">Any</option>
+                                @foreach (var seat in seatOptions)
+                                {
+                                    var selected = selectedSeats == seat ? " selected" : "";
+                                    @Html.Raw($"<option value=\"{seat}\"{selected}>{seat} Seats</option>")
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price Range</label>
+                            <select class="form-select" id="filterPrice" onchange="filterVehicles()">
+                                <option value="">Any Price</option>
+                                @foreach (var price in priceOptions)
+                                {
+                                    var selected = selectedPrice == price.Value ? " selected" : "";
+                                    @Html.Raw($"<option value=\"{price.Value}\"{selected}>{price.Text}</option>")
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Availability</label>
+                            <select class="form-select" id="filterAvailability" onchange="filterVehicles()">
+                                <option value="">All</option>
+                                @foreach (var avail in availabilityOptions)
+                                {
+                                    var selected = selectedAvailability == avail.Value ? " selected" : "";
+                                    @Html.Raw($"<option value=\"{avail.Value}\"{selected}>{avail.Text}</option>")
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicles Grid -->
+    <div class="row" id="vehiclesGrid">
+        @foreach (var vehicle in Model)
+        {
+            <div class="col-md-4 mb-4 vehicle-item" 
+                 data-type="@vehicle.Type" 
+                 data-seats="@vehicle.Seats" 
+                 data-price="@vehicle.PricePerDay"
+                 data-available="@vehicle.IsAvailable.ToString().ToLower()">
+                <div class="card vehicle-card h-100">
+                    <img src="@(string.IsNullOrEmpty(vehicle.ImageUrl) ? "/images/default-car.jpg" : vehicle.ImageUrl)" 
+                         class="card-img-top" alt="@vehicle.Name" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@vehicle.Name</h5>
+                        <p class="card-text">@vehicle.Description</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary">@vehicle.Type</span>
+                            <span class="badge bg-secondary">@vehicle.Seats Seats</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                Location: @(vehicle.Latitude != 0 ? $"{vehicle.Latitude:F4}, {vehicle.Longitude:F4}" : "Not set")
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> 
+                                Updated: @vehicle.LastLocationUpdate.ToString("MMM dd, HH:mm")
+                            </small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge @(vehicle.IsAvailable ? "bg-success" : "bg-danger")">
+                                @(vehicle.IsAvailable ? "Available" : "Not Available")
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">Rs. @vehicle.PricePerDay.ToString("N0")</span>
+                            <div>
+                                <a href="/Vehicle/Details/@vehicle.VehicleID" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                                @if (vehicle.IsAvailable)
+                                {
+                                    <a href="/Booking/Book/@vehicle.VehicleID" class="btn btn-success btn-sm">
+                                        <i class="fas fa-calendar-check"></i> Book Now
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="text-center py-5" style="display: none;">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h4>No vehicles found</h4>
+        <p class="text-muted">Try adjusting your filters to find more vehicles.</p>
+    </div>
+</div>
+
+<script>
+function filterVehicles() {
+    const type = document.getElementById('filterType').value;
+    const seats = document.getElementById('filterSeats').value;
+    const price = document.getElementById('filterPrice').value;
+    const availability = document.getElementById('filterAvailability').value;
+    
+    const vehicles = document.querySelectorAll('.vehicle-item');
+    let visibleCount = 0;
+    
+    vehicles.forEach(vehicle => {
+        let show = true;
+        
+        // Filter by type
+        if (type && vehicle.dataset.type !== type) {
+            show = false;
+        }
+        
+        // Filter by seats
+        if (seats && vehicle.dataset.seats !== seats) {
+            show = false;
+        }
+        
+        // Filter by price
+        if (price) {
+            const vehiclePrice = parseInt(vehicle.dataset.price);
+            const [min, max] = price.split('-').map(p => parseInt(p));
+            if (vehiclePrice < min || vehiclePrice > max) {
+                show = false;
+            }
+        }
+        
+        // Filter by availability
+        if (availability && vehicle.dataset.available !== availability) {
+            show = false;
+        }
+        
+        if (show) {
+            vehicle.style.display = 'block';
+            visibleCount++;
+        } else {
+            vehicle.style.display = 'none';
+        }
+    });
+    
+    // Show/hide no results message
+    const noResults = document.getElementById('noResults');
+    if (visibleCount === 0) {
+        noResults.style.display = 'block';
+    } else {
+        noResults.style.display = 'none';
+    }
+}
+
+// Initialize filters on page load
+document.addEventListener('DOMContentLoaded', function() {
+    filterVehicles();
+});
+</script> 

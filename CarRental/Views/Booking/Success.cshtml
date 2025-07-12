@@ -1,0 +1,97 @@
+@model CarRental.Models.Booking
+@{
+    ViewData["Title"] = "Booking Confirmed";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-check-circle"></i> Booking Confirmed!
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+                        <h4>Thank you for your booking!</h4>
+                        <p class="text-muted">Your booking has been successfully created. We'll contact you soon to confirm the details.</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Booking Details</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Booking ID:</strong></td>
+                                    <td>#@Model.BookingID</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vehicle:</strong></td>
+                                    <td>@Model.Vehicle.Name</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Customer:</strong></td>
+                                    <td>@Model.CustomerName</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>@Model.Phone</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>@Model.Email</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Rental Details</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Pick-up Date:</strong></td>
+                                    <td>@Model.PickupDate.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Rental Days:</strong></td>
+                                    <td>@Model.RentalDays days</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Amount:</strong></td>
+                                    <td><span class="h5 text-primary">Rs. @Model.TotalAmount.ToString("N0")</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td><span class="badge bg-warning">@Model.Status</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Booking Date:</strong></td>
+                                    <td>@Model.BookingDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Important Information</h6>
+                        <ul class="mb-0">
+                            <li>Please bring your NIC or Passport for identification</li>
+                            <li>We'll contact you to confirm pickup location and time</li>
+                            <li>Payment will be collected upon vehicle pickup</li>
+                            <li>For any changes, please contact us at 0766251694</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="/" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                        <a href="/Vehicle" class="btn btn-outline-primary">
+                            <i class="fas fa-car"></i> Browse More Vehicles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

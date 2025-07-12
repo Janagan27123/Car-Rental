@@ -1,0 +1,167 @@
+@model CarRental.Models.Vehicle
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Vehicle Details -->
+        <div class="col-md-8">
+            <div class="card">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default-car.jpg" : Model.ImageUrl)" 
+                     class="card-img-top" alt="@Model.Name" style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.Name</h2>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Type:</strong> <span class="badge bg-primary">@Model.Type</span></p>
+                            <p><strong>Seats:</strong> <span class="badge bg-secondary">@Model.Seats</span></p>
+                            <p><strong>Price per Day:</strong> <span class="h5 text-primary">Rs. @Model.PricePerDay.ToString("N0")</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Availability:</strong> 
+                                <span class="badge @(Model.IsAvailable ? "bg-success" : "bg-danger")">
+                                    @(Model.IsAvailable ? "Available" : "Not Available")
+                                </span>
+                            </p>
+                            <p><strong>Last Location Update:</strong> @Model.LastLocationUpdate.ToString("MMM dd, yyyy HH:mm")</p>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-3">
+                            <h5>Description</h5>
+                            <p>@Model.Description</p>
+                        </div>
+                    }
+                    
+                    <div class="d-flex gap-2">
+                        @if (Model.IsAvailable)
+                        {
+                            <a href="/Booking/Book/@Model.VehicleID" class="btn btn-success btn-lg">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </a>
+                        }
+                        <a href="/Vehicle" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Back to Vehicles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vehicle Location Map -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> Vehicle Location
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Latitude != 0 && Model.Longitude != 0)
+                    {
+                        <div id="map" style="height: 300px; width: 100%;"></div>
+                        <div class="mt-3">
+                            <p><strong>Coordinates:</strong></p>
+                            <p class="text-muted">Latitude: @Model.Latitude.ToString("F6")</p>
+                            <p class="text-muted">Longitude: @Model.Longitude.ToString("F6")</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Location not available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Admin Location Update (if logged in) -->
+            @if (Context.Session.GetString("AdminUsername") != null)
+            {
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Update Location (Admin)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="newLatitude" step="0.000001" value="@Model.Latitude">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="newLongitude" step="0.000001" value="@Model.Longitude">
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="updateLocation()">
+                            <i class="fas fa-save"></i> Update Location
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Model.Latitude != 0 && Model.Longitude != 0)
+{
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+    <script>
+        function initMap() {
+            const location = { lat: @Model.Latitude, lng: @Model.Longitude };
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: location,
+            });
+            
+            new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "@Model.Name"
+            });
+        }
+        
+        // Initialize map when page loads
+        window.addEventListener('load', initMap);
+    </script>
+}
+
+<script>
+function updateLocation() {
+    const latitude = parseFloat(document.getElementById('newLatitude').value);
+    const longitude = parseFloat(document.getElementById('newLongitude').value);
+    
+    if (isNaN(latitude) || isNaN(longitude)) {
+        alert('Please enter valid coordinates');
+        return;
+    }
+    
+    fetch('/Vehicle/UpdateLocation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
+        body: JSON.stringify({
+            vehicleId: @Model.VehicleID,
+            latitude: latitude,
+            longitude: longitude
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Location updated successfully!');
+            location.reload();
+        } else {
+            alert('Failed to update location');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating location');
+    });
+}
+</script> 

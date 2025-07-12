@@ -1,0 +1,112 @@
+@model CarRental.Models.Vehicle
+@{
+    ViewData["Title"] = "Edit Vehicle";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-edit"></i> Edit Vehicle: @Model.Name
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditVehicle" method="post">
+                        <input type="hidden" asp-for="VehicleID" />
+                        <input type="hidden" asp-for="LastLocationUpdate" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label">Vehicle Name *</label>
+                                    <input asp-for="Name" class="form-control" required>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Type" class="form-label">Vehicle Type *</label>
+                                    <select asp-for="Type" class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="CAR">Car</option>
+                                        <option value="VAN">Van</option>
+                                        <option value="BUS">Bus</option>
+                                        <option value="JEEP">Jeep</option>
+                                    </select>
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Seats" class="form-label">Number of Seats *</label>
+                                    <input asp-for="Seats" type="number" class="form-control" min="1" max="50" required>
+                                    <span asp-validation-for="Seats" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="PricePerDay" class="form-label">Price per Day (Rs.) *</label>
+                                    <input asp-for="PricePerDay" type="number" class="form-control" min="0" step="0.01" required>
+                                    <span asp-validation-for="PricePerDay" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg">
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            <small class="form-text text-muted">Leave empty to use default image</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter vehicle description..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Latitude" class="form-label">Latitude</label>
+                                    <input asp-for="Latitude" type="number" class="form-control" step="0.000001" placeholder="9.6615">
+                                    <span asp-validation-for="Latitude" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Longitude" class="form-label">Longitude</label>
+                                    <input asp-for="Longitude" type="number" class="form-control" step="0.000001" placeholder="80.0255">
+                                    <span asp-validation-for="Longitude" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsAvailable" class="form-check-input" type="checkbox">
+                                <label asp-for="IsAvailable" class="form-check-label">
+                                    Vehicle is available for booking
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Vehicle
+                            </button>
+                            <a href="/Admin/Vehicles" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Vehicles
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
