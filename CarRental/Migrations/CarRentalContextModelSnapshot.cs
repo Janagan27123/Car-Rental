@@ -17,10 +17,10 @@ namespace CarRental.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("CarRental.Models.AdminUser", b =>
                 {
@@ -28,7 +28,7 @@ namespace CarRental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -68,7 +68,7 @@ namespace CarRental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingID"));
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
@@ -100,7 +100,8 @@ namespace CarRental.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("VehicleID")
                         .HasColumnType("int");
@@ -120,7 +121,7 @@ namespace CarRental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -156,7 +157,7 @@ namespace CarRental.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleID"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -184,7 +185,8 @@ namespace CarRental.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("PricePerDay")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("Seats")
                         .HasColumnType("int");

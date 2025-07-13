@@ -19,6 +19,15 @@ namespace CarRental.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure decimal precision
+            modelBuilder.Entity<Vehicle>()
+                .Property(v => v.PricePerDay)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.TotalAmount)
+                .HasPrecision(10, 2);
+
             // Configure relationships
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Vehicle)
